@@ -38,7 +38,14 @@ import {
 
 dotenv.config();
 
-const frontendDist = path.resolve(process.cwd(), '../frontend/dist/frontend/browser');
+// Candidatos para ubicar el frontend compilado (sea desde root o desde backend)
+const candidatePaths = [
+  path.resolve(process.cwd(), 'frontend/dist/frontend/browser'),
+  path.resolve(process.cwd(), '../frontend/dist/frontend/browser'),
+  path.resolve(__dirname, '../../frontend/dist/frontend/browser'),
+  path.resolve(__dirname, '../frontend/dist/frontend/browser')
+];
+const frontendDist = candidatePaths.find(p => fs.existsSync(p)) || candidatePaths[0];
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -93,6 +100,7 @@ app.put('/api/admin/citas/:id/modificar', authMiddleware, roleMiddleware([3]), m
 
 // Servir frontend compilado de Angular en el mismo puerto 3000
 if (fs.existsSync(frontendDist)) {
+  console.log(`📦 Frontend estático Angular detectado en: ${frontendDist}`);
   app.use(express.static(frontendDist));
   app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api')) {
@@ -100,6 +108,8 @@ if (fs.existsSync(frontendDist)) {
     }
     res.sendFile(path.join(frontendDist, 'index.html'));
   });
+} else {
+  console.warn(`⚠️ Frontend estático no encontrado en ${frontendDist}. Solo rutas /api disponibles.`);
 }
 
 // Inicializar y escuchar

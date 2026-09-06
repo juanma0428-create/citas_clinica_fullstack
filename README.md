@@ -20,9 +20,45 @@ Abre tu navegador en: **`http://localhost:3000`**
 
 ---
 
-## 🌐 Publicación en la Web y Dominio en Spaceship
+## 🚀 Despliegue en Render (Render Ready)
 
-Al estar unificado en el **puerto 3000**, solo necesitas tunelar un único puerto para exponer tanto la web como la API bajo tu dominio propio, con HTTPS automático y sin problemas de CORS.
+El repositorio está **100% preparado para Render** con configuración Blueprint (`render.yaml`), `package.json` raíz y motor de datos mock autónomo (no requiere contratar base de datos externa):
+
+### Opción 1: Despliegue con 1 Clic (Blueprint)
+1. Inicia sesión en [Render](https://dashboard.render.com/).
+2. Haz clic en **New +** &rarr; **Blueprint**.
+3. Conecta tu repositorio de GitHub: `juanma0428-create/citas_clinica_fullstack`.
+4. Render detectará automáticamente el archivo `render.yaml` y configurará:
+   - **Environment:** `Node`
+   - **Build Command:** `npm run build`
+   - **Start Command:** `npm start`
+5. Haz clic en **Apply**. En 2-3 minutos tu aplicación estará en línea con HTTPS gratuito.
+
+### Opción 2: Web Service Manual en Render
+Si prefieres crearlo como un Web Service normal:
+1. **New +** &rarr; **Web Service** &rarr; Conectar `citas_clinica_fullstack`.
+2. Parámetros de configuración:
+   - **Runtime:** `Node`
+   - **Build Command:** `npm run build`
+   - **Start Command:** `npm start`
+   - **Environment Variables**:
+     - `NODE_VERSION`: `20.16.0`
+3. ¡Listo! Tu app estará en `https://syscitas-hospital.onrender.com`.
+
+### Conectar tu dominio de Spaceship en Render
+1. En tu Web Service de Render, ve a **Settings** &rarr; **Custom Domains**.
+2. Añade tu subdominio (ej: `citas.tudominio.com`).
+3. En tu panel de **Spaceship** (Advanced DNS), crea el registro:
+   - **Type:** `CNAME`
+   - **Host:** `citas`
+   - **Target / Value:** la dirección que te indique Render (ej: `syscitas-hospital.onrender.com`).
+Render gestionará el certificado SSL de forma automática y gratuita.
+
+---
+
+## 🌐 Publicación Local con Túnel (Cloudflare + Spaceship)
+
+Si prefieres ejecutarlo localmente y tunelarlo a tu dominio propio:
 
 ### Configuración con Cloudflare Tunnel (100% Gratis y Permanente)
 
